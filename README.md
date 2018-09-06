@@ -23,7 +23,7 @@ See more install tutorial from labelImg ```https://github.com/tzutalin/labelImg#
 
 ### Install OpenPose
 
-https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md
+Requierment a PC with GPU, reference to: [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md)
 
 Run ```make install``` after build successfully.
 
