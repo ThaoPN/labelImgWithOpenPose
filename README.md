@@ -35,12 +35,12 @@ Open ```extractKeypointsWithOpenPose.py``` to edit some information.
 
 Set GPU ID to use if you have multi GPU
 ```python
-28    params["num_gpu_start"] = 0
+params["num_gpu_start"] = 0
 ```
 
 Set the path to models folder of OpenPose
 ```python
-31    params["default_model_folder"] = "/path/to/openpose/models/"
+params["default_model_folder"] = "/path/to/openpose/models/"
 ```
 
 ### Run with argument
