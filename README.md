@@ -60,7 +60,7 @@ examples
     ---- COCO_val2014_000000000474.txt
 ```
 
-## labelImgOpenPoseTXT.py: Review result be extracted
+## labelImgOpenPoseTXT.py: Review results be extracted
 
 ```
 python labelImgOpenPoseTXT.py
