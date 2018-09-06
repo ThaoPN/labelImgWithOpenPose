@@ -3,9 +3,9 @@ LabelImgWithOpenPose is a graphical human pose image annotation tool development
 
 ## Reference:
 
-### labelImg: ```https://github.com/tzutalin/labelImg```
+**labelImg:** ```https://github.com/tzutalin/labelImg```
 
-### OpenPose: ```https://github.com/CMU-Perceptual-Computing-Lab/openpose```
+**OpenPose:** ```https://github.com/CMU-Perceptual-Computing-Lab/openpose```
 
 ## Requierment:
 ### OpenPose: https://github.com/CMU-Perceptual-Computing-Lab/openpose
