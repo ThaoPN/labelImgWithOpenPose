@@ -10,13 +10,9 @@ LabelImgWithOpenPose is a graphical human pose image annotation tool development
 ## Requierment:
 ### OpenPose: https://github.com/CMU-Perceptual-Computing-Lab/openpose
 
-## Quick Start:
-1. Clone source
-```
-git clone https://github.com/zeuspnt/labelImg.git
-```
+## Installation:
 
-2. Install lib for labelImg
+### Install libs for labelImg
 Python3 and Qt5
 ```
 sudo apt-get install pyqt5-dev-tools
@@ -25,26 +21,14 @@ make qt5py3
 ```
 See more install tutorial from labelImg ```https://github.com/tzutalin/labelImg#installation```
 
-3. Install OpenPose
+### Install OpenPose
 
 https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md
 
 Run ```make install``` after build successfully.
 
-4. Edit some information
 
-Open file ```labelImgOpenPose.py``` and edit at line 78
-```
-# Ensure you point to the correct path where models are located
-params["default_model_folder"] = "folder/path/to/models/in/openpose"
-```
-usually, it will at ```.../openpose/models/```
-
-5. Run
-```
-python3 labelImgOpenPose.py
-```
-## Extract keypoints from OpenPose to txt file (extractKeypointsWithOpenPose.py)
+## extractKeypointsWithOpenPose.py: Extract keypoints from OpenPose to txt file
 
 ### Edit some parameter
 
@@ -76,7 +60,7 @@ examples
     ---- COCO_val2014_000000000474.txt
 ```
 
-## Review result be extracted (labelImgOpenPoseTXT.py)
+## labelImgOpenPoseTXT.py: Review result be extracted
 
 ```
 python labelImgOpenPoseTXT.py
