@@ -16,12 +16,7 @@ LabelImgWithOpenPose is a graphical human pose image annotation tool development
 git clone https://github.com/zeuspnt/labelImg.git
 ```
 
-2. Checkout branch to ```labelimgwithpose```
-```
- git checkout labelimgwithpose
-```
-
-3. Install lib for labelImg
+2. Install lib for labelImg
 Python3 and Qt5
 ```
 sudo apt-get install pyqt5-dev-tools
@@ -30,13 +25,13 @@ make qt5py3
 ```
 See more install tutorial from labelImg ```https://github.com/tzutalin/labelImg#installation```
 
-4. Install OpenPose
+3. Install OpenPose
 
 https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation.md
 
 Run ```make install``` after build successfully.
 
-5. Edit some information
+4. Edit some information
 
 Open file ```labelImgOpenPose.py``` and edit at line 78
 ```
@@ -45,7 +40,7 @@ params["default_model_folder"] = "folder/path/to/models/in/openpose"
 ```
 usually, it will at ```.../openpose/models/```
 
-6. Run
+5. Run
 ```
 python3 labelImgOpenPose.py
 ```
