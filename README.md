@@ -31,15 +31,16 @@ Run ```make install``` after build successfully.
 ## extractKeypointsWithOpenPose.py: Extract keypoints from OpenPose to txt file
 
 ### Edit some parameter
+Open ```extractKeypointsWithOpenPose.py``` to edit some information.
 
 Set GPU ID to use if you have multi GPU
-```
-params["num_gpu_start"] = 0
+```python
+28    params["num_gpu_start"] = 0
 ```
 
 Set the path to models folder of OpenPose
-```
-params["default_model_folder"] = "/path/to/openpose/models/"
+```python
+31    params["default_model_folder"] = "/path/to/openpose/models/"
 ```
 
 ### Run with argument
