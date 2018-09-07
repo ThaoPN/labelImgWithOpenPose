@@ -21,8 +21,8 @@ Keypoints for pose above with COCO 18 body parts will save to TXT file by format
 
 With ordering:
 <p align="center">
-   <img src="demo/demo5.png", width="400">
-   <img margin: "auto"; src="demo/demo6.png", width="166">
+   <img src="demo/demo5.png", width="300">
+   <img src="demo/demo6.png", width="166">
 </p>
 
 See more here: https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md#pose-output-format-coco
