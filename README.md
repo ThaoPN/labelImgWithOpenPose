@@ -1,6 +1,12 @@
 # labelImgWithOpenPose
 LabelImgWithOpenPose is a graphical human pose image annotation tool development based on labelImg and OpenPose.
 
+## Features
+- [x] Save pose skeleton to image file.
+- [x] Draw pose skeleton on image to label
+- [x] Extract keypoints to txt file.
+- [ ] Auto annotation
+
 ## Reference:
 
 **labelImg:** ```https://github.com/tzutalin/labelImg```
