@@ -28,10 +28,10 @@ With ordering:
 See more here: https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md#pose-output-format-coco
 
 ## Features
+- [x] Extract keypoints by OpenPose and save to txt file on GPU PC.
+- [x] Draw pose skeleton on image from txt file to annotate.
 - [x] Save pose skeleton to image file.
-- [x] Draw pose skeleton on image to label
-- [x] Extract keypoints to txt file.
-- [ ] Auto annotation
+- [ ] Auto annotation.
 
 ## Reference:
 
