@@ -12,11 +12,38 @@ LabelImgWithOpenPose is a graphical human pose image annotation tool development
    <img src="demo/demo3.jpg", width="400">
    <img src="demo/demo4.png", width="400">
 </p>
-Keypoints for pose above with COCO 18 body parts will save to TXT file like this:
+Keypoints for pose above with COCO 18 body parts will save to TXT file by format ```x1, y1, x2, y2, ...``` like this:
 
 ```
 228, 86, 233, 151, 188, 151, 178, 225, 175, 299, 275, 148, 299, 230, 275, 302, 195, 314, 206, 419, 208, 515, 257, 315, 265, 422, 268, 528, 220, 76, 237, 76, 207, 86, 255, 86
 ```
+
+With ordering:
+<p align="center">
+   <img src="demo/demo5.png", width="400">
+</p>
+```
+{0,  "Nose"},
+{1,  "Neck"},
+{2,  "RShoulder"},
+{3,  "RElbow"},
+{4,  "RWrist"},
+{5,  "LShoulder"},
+{6,  "LElbow"},
+{7,  "LWrist"},
+{8,  "RHip"},
+{9,  "RKnee"},
+{10, "RAnkle"},
+{11, "LHip"},
+{12, "LKnee"},
+{13, "LAnkle"},
+{14, "REye"},
+{15, "LEye"},
+{16, "REar"},
+{17, "LEar"},
+{18, "Background"}
+```
+
 
 See more here: https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md#pose-output-format-coco
 
@@ -80,10 +107,10 @@ examples
 |
 ---- images
 |  |
-|   ---- COCO_val2014_000000000474.jpg
+|   ---- standing.jpg
 ---- keypoints
    |
-    ---- COCO_val2014_000000000474.txt
+    ---- standing.txt
 ```
 
 ## labelImgOpenPoseTXT.py: Review results be extracted
