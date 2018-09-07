@@ -1,6 +1,25 @@
 # labelImgWithOpenPose
 LabelImgWithOpenPose is a graphical human pose image annotation tool development based on labelImg and OpenPose.
 
+<p align="center">
+   <img src="demo/demo1.png", width="820">
+</p>
+<p align="center">
+   <img src="demo/demo2.png", width="820">
+</p>
+
+<p align="center">
+   <img src="demo/demo3.jpg", width="400">
+   <img src="demo/demo4.png", width="400">
+</p>
+Keypoints for pose above with COCO 18 body parts will save to TXT file like this:
+
+```
+228, 86, 233, 151, 188, 151, 178, 225, 175, 299, 275, 148, 299, 230, 275, 302, 195, 314, 206, 419, 208, 515, 257, 315, 265, 422, 268, 528, 220, 76, 237, 76, 207, 86, 255, 86
+```
+
+See more here: https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md#pose-output-format-coco
+
 ## Features
 - [x] Save pose skeleton to image file.
 - [x] Draw pose skeleton on image to label
