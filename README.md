@@ -12,8 +12,8 @@ LabelImgWithOpenPose is a graphical human pose image annotation tool development
    <img src="demo/demo3.jpg", width="400">
    <img src="demo/demo4.png", width="400">
 </p>
-Keypoints for pose above with COCO 18 body parts will save to TXT file by format 
-`x1, y1, x2, y2, ...` like this:
+
+Keypoints for pose above with COCO 18 body parts will save to TXT file by format ```x1, y1, x2, y2, ...``` like this:
 
 ```
 228, 86, 233, 151, 188, 151, 178, 225, 175, 299, 275, 148, 299, 230, 275, 302, 195, 314, 206, 419, 208, 515, 257, 315, 265, 422, 268, 528, 220, 76, 237, 76, 207, 86, 255, 86
