@@ -12,6 +12,7 @@ LabelImgWithOpenPose is a graphical human pose image annotation tool development
    <img src="demo/demo3.jpg", width="400">
    <img src="demo/demo4.png", width="400">
 </p>
+
 Keypoints for pose above with COCO 18 body parts will save to TXT file by format ```x1, y1, x2, y2, ...``` like this:
 
 ```
@@ -20,38 +21,17 @@ Keypoints for pose above with COCO 18 body parts will save to TXT file by format
 
 With ordering:
 <p align="center">
-   <img src="demo/demo5.png", width="400">
+   <img src="demo/demo5.png", width="300">
+   <img src="demo/demo6.png", width="166">
 </p>
-```
-{0,  "Nose"},
-{1,  "Neck"},
-{2,  "RShoulder"},
-{3,  "RElbow"},
-{4,  "RWrist"},
-{5,  "LShoulder"},
-{6,  "LElbow"},
-{7,  "LWrist"},
-{8,  "RHip"},
-{9,  "RKnee"},
-{10, "RAnkle"},
-{11, "LHip"},
-{12, "LKnee"},
-{13, "LAnkle"},
-{14, "REye"},
-{15, "LEye"},
-{16, "REar"},
-{17, "LEar"},
-{18, "Background"}
-```
-
 
 See more here: https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md#pose-output-format-coco
 
 ## Features
+- [x] Extract keypoints by OpenPose and save to txt file on GPU PC.
+- [x] Draw pose skeleton on image from txt file to annotate.
 - [x] Save pose skeleton to image file.
-- [x] Draw pose skeleton on image to label
-- [x] Extract keypoints to txt file.
-- [ ] Auto annotation
+- [ ] Auto annotation.
 
 ## Reference:
 
