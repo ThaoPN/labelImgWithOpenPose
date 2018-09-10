@@ -31,8 +31,8 @@ import resources
 from libs.constants import *
 from libs.lib import struct, newAction, newIcon, addActions, fmtShortcut, generateColorByText
 from libs.settings import Settings
-from libs.shape import Shape, DEFAULT_LINE_COLOR, DEFAULT_FILL_COLOR
-from libs.canvas import Canvas
+from libs.shape_pose import ShapePose, DEFAULT_LINE_COLOR, DEFAULT_FILL_COLOR
+from libs.canvas_pose import CanvasPose
 from libs.zoomWidget import ZoomWidget
 from libs.labelDialog import LabelDialog
 from libs.colorDialog import ColorDialog
@@ -217,7 +217,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.zoomWidget = ZoomWidget()
         self.colorDialog = ColorDialog(parent=self)
 
-        self.canvas = Canvas(parent=self)
+        self.canvas = CanvasPose(parent=self)
         self.canvas.zoomRequest.connect(self.zoomRequest)
 
         scroll = QScrollArea()
@@ -780,7 +780,7 @@ class MainWindow(QMainWindow, WindowMixin):
     def loadLabels(self, shapes):
         s = []
         for label, points, line_color, fill_color, difficult in shapes:
-            shape = Shape(label=label)
+            shape = ShapePose(label=label)
             for x, y in points:
                 shape.addPoint(QPointF(x, y))
             shape.difficult = difficult

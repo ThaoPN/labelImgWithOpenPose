@@ -9,7 +9,7 @@ except ImportError:
 
 #from PyQt4.QtOpenGL import *
 
-from libs.shape import Shape
+from libs.shape_pose import ShapePose
 from libs.lib import distance
 
 CURSOR_DEFAULT = Qt.ArrowCursor
@@ -21,7 +21,7 @@ CURSOR_GRAB = Qt.OpenHandCursor
 # class Canvas(QGLWidget):
 
 
-class Canvas(QWidget):
+class CanvasPose(QWidget):
     zoomRequest = pyqtSignal(int)
     scrollRequest = pyqtSignal(int, int)
     newShape = pyqtSignal()
@@ -37,7 +37,7 @@ class Canvas(QWidget):
     shiftPress = False
 
     def __init__(self, *args, **kwargs):
-        super(Canvas, self).__init__(*args, **kwargs)
+        super(CanvasPose, self).__init__(*args, **kwargs)
         # Initialise local state.
         self.mode = self.EDIT
         self.shapes = []
@@ -46,7 +46,7 @@ class Canvas(QWidget):
         self.selectedShapeCopy = None
         self.drawingLineColor = QColor(0, 0, 255)
         self.drawingRectColor = QColor(0, 0, 255) 
-        self.line = Shape(line_color=self.drawingLineColor)
+        self.line = ShapePose(line_color=self.drawingLineColor)
         self.prevPoint = QPointF()
         self.offsets = QPointF(), QPointF()
         self.scale = 1.0
@@ -268,7 +268,7 @@ class Canvas(QWidget):
             self.current.addPoint(QPointF(minX, maxY))
             self.finalise()
         elif not self.outOfPixmap(pos):
-            self.current = Shape()
+            self.current = ShapePose()
             self.current.addPoint(pos)
             self.line.points = [pos, pos]
             self.setHiding()
@@ -406,7 +406,7 @@ class Canvas(QWidget):
 
     def paintEvent(self, event):
         if not self.pixmap:
-            return super(Canvas, self).paintEvent(event)
+            return super(CanvasPose, self).paintEvent(event)
 
         p = self._painter
         p.begin(self)
@@ -418,7 +418,7 @@ class Canvas(QWidget):
         p.translate(self.offsetToCenter())
 
         p.drawPixmap(0, 0, self.pixmap)
-        Shape.scale = self.scale
+        ShapePose.scale = self.scale
         for shape in self.shapes:
             if (shape.selected or not self._hideBackround) and self.isVisible(shape):
                 shape.fill = shape.selected or shape == self.hShape
@@ -463,7 +463,7 @@ class Canvas(QWidget):
 
     def offsetToCenter(self):
         s = self.scale
-        area = super(Canvas, self).size()
+        area = super(CanvasPose, self).size()
         w, h = self.pixmap.width() * s, self.pixmap.height() * s
         aw, ah = area.width(), area.height()
         x = (aw - w) / (2 * s) if aw > w else 0
