@@ -102,7 +102,7 @@ python labelImgOpenPoseTXT.py
 Click on ```Open Dir``` button to open folder contain images, the app will automate load txt files in keypoints folder and draw that pose on images.
 
 ## extractKeypointsAndClassifier.py: 
-After get keypoints then we feed it into a classify graph and save results to XML file
+After get keypoints then we feed it into a classifier graph (use a DNN-based classifier) and save results to XML file
 
 ### Run with argument
 
