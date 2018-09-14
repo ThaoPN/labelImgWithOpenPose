@@ -28,7 +28,8 @@ With ordering:
 See more here: https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/output.md#pose-output-format-coco
 
 ## Features
-- [x] Extract keypoints by OpenPose and save to txt file on GPU PC.
+- [x] Extract keypoints by OpenPose and save to txt file on **GPU PC**.
+- [x] Extract keypoints by OpenPose, classify, and save to XML file on **GPU PC**
 - [x] Draw pose skeleton on image from txt file to annotate.
 - [x] Save pose skeleton to image file.
 - [ ] Auto annotation.
@@ -78,20 +79,19 @@ params["default_model_folder"] = "/path/to/openpose/models/"
 ### Run with argument
 
 ```
-python extractKeypointsWithOpenPose.py --imagedir=/home/ai/cuda-workspace/labelImg/examples/images/
+python extractKeypointsWithOpenPose.py --imagedir=examples/images/
 ```
 
 Get all images in path at parameter ```--imagedir``` to pass into Openpose and save keypoints in txt file in keypoints directory with structure:
 ```
 examples
-|
----- images
-|  |
-|   ---- standing.jpg
----- keypoints
-   |
-    ---- standing.txt
+├── images
+│   └── standing.jpg
+├── keypoints
+    └── standing.txt
 ```
+
+By default, It will save with TXT format, If you want to save with XML format, use argument ```--outputtype=xml```
 
 ## labelImgOpenPoseTXT.py: Review results be extracted
 
@@ -100,3 +100,19 @@ python labelImgOpenPoseTXT.py
 ```
 
 Click on ```Open Dir``` button to open folder contain images, the app will automate load txt files in keypoints folder and draw that pose on images.
+
+## extractKeypointsAndClassifier.py: 
+After get keypoints then we feed it into a classify graph and save results to XML file
+
+### Run with argument
+
+```
+python extractKeypointsAndClassifier.py --imagedir=examples/images/
+```
+
+Classes:
+```
+"standing",
+"bending",
+"crouching"
+```
