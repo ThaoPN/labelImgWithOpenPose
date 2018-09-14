@@ -141,13 +141,27 @@ class PascalVocReader:
     def getShapes(self):
         return self.shapes
 
-    def addShape(self, label, bndbox, difficult):
+    def addShape(self, label, bndbox, difficult, poseLabel, keypoints):
         xmin = int(bndbox.find('xmin').text)
         ymin = int(bndbox.find('ymin').text)
         xmax = int(bndbox.find('xmax').text)
         ymax = int(bndbox.find('ymax').text)
         points = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)]
-        self.shapes.append((label, points, None, None, difficult))
+        
+        self.shapes.append((label, points, None, None, difficult, poseLabel, self.getKeyPoints(keypoints)))
+
+    def getKeyPoints(self, keypoints):
+        keypoints = keypoints.strip()
+        pList = keypoints.split(",")
+        
+        lenght = len(pList)
+        points = []
+        for i in range(0, lenght, 2):
+            if i+1 >= lenght:
+                break
+            points.append((int(float(pList[i])), int(float(pList[i+1]))))
+        
+        return points
 
     def parseXML(self):
         assert self.filepath.endswith(XML_EXT), "Unsupport file format"
@@ -164,9 +178,12 @@ class PascalVocReader:
         for object_iter in xmltree.findall('object'):
             bndbox = object_iter.find("bndbox")
             label = object_iter.find('name').text
+            keypoints = object_iter.find('keypoints').text
+            poseLabel = object_iter.find('pose').text
+            
             # Add chris
             difficult = False
             if object_iter.find('difficult') is not None:
                 difficult = bool(int(object_iter.find('difficult').text))
-            self.addShape(label, bndbox, difficult)
+            self.addShape(label, bndbox, difficult, poseLabel, keypoints)
         return True

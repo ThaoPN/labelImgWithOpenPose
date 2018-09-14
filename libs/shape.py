@@ -21,7 +21,7 @@ DEFAULT_HVERTEX_FILL_COLOR = QColor(255, 0, 0)
 MIN_Y_LABEL = 10
 
 
-class ShapePose(object):
+class Shape(object):
     P_SQUARE, P_ROUND = range(2)
 
     MOVE_VERTEX, NEAR_VERTEX = range(2)
@@ -38,9 +38,11 @@ class ShapePose(object):
     point_size = 8
     scale = 1.0
 
-    def __init__(self, label=None, line_color=None, difficult=False, paintLabel=False):
+    def __init__(self, label=None, line_color=None, difficult=False, paintLabel=False, poseLabel=None):
         self.label = label
         self.points = []
+        self.poseLabel = poseLabel
+        self.posePoints = []
         self.fill = False
         self.selected = False
         self.difficult = difficult
@@ -65,13 +67,17 @@ class ShapePose(object):
         self._closed = True
 
     def reachMaxPoints(self):
-        if len(self.points) >= 18:
+        if len(self.points) >= 4:
             return True
         return False
 
     def addPoint(self, point):
         if not self.reachMaxPoints():
             self.points.append(point)
+
+    def addPosePoint(self, point):
+        if len(self.posePoints) <= 18:
+            self.posePoints.append(point)
 
     def popPoint(self):
         if self.points:
@@ -84,30 +90,8 @@ class ShapePose(object):
     def setOpen(self):
         self._closed = False
 
-    def drawPose(self, painter):
-        poseMap = [(0,1), (0,14), (0,15), (1,2), (1,5), (1,8), (1,11), (2,3), (3,4), (5,6), (6,7), (8,9), (9,10), (11,12), (12,13), (14,16), (15,17)]
-        if self.points:
-            #color = self.select_line_color if self.selected else self.line_color
-            #pen = QPen(color)
-            # Try using integer sizes for smoother drawing(?)
-            #pen.setWidth(max(1, int(round(2.0 / self.scale))))
-            #painter.setPen(pen)
-            
-            line_path = QPainterPath()
-            
-            # draw points
-            
-            # draw lines
-            for link in poseMap:
-                p1 = self.points[link[0]]
-                p2 = self.points[link[1]]
-                if p1.isNull() or p2.isNull():
-                    continue
-                line_path.moveTo(p1)
-                line_path.lineTo(p2)
-            painter.drawPath(line_path)
-
     def paint(self, painter):
+        
         if self.points:
             color = self.select_line_color if self.selected else self.line_color
             pen = QPen(color)
@@ -115,24 +99,22 @@ class ShapePose(object):
             pen.setWidth(max(1, int(round(2.0 / self.scale))))
             painter.setPen(pen)
 
-            self.drawPose(painter)
-
             line_path = QPainterPath()
             vrtx_path = QPainterPath()
 
-            #line_path.moveTo(self.points[0])
+            line_path.moveTo(self.points[0])
             # Uncommenting the following line will draw 2 paths
             # for the 1st vertex, and make it non-filled, which
             # may be desirable.
             #self.drawVertex(vrtx_path, 0)
 
             for i, p in enumerate(self.points):
-                #line_path.lineTo(p)
+                line_path.lineTo(p)
                 self.drawVertex(vrtx_path, i)
-            #if self.isClosed():
-            #    line_path.lineTo(self.points[0])
+            if self.isClosed():
+                line_path.lineTo(self.points[0])
 
-            #painter.drawPath(line_path)
+            painter.drawPath(line_path)
             painter.drawPath(vrtx_path)
             painter.fillPath(vrtx_path, self.vertex_fill_color)
 
@@ -157,19 +139,56 @@ class ShapePose(object):
             if self.fill:
                 color = self.select_fill_color if self.selected else self.fill_color
                 painter.fillPath(line_path, color)
+                
+            self.drawPose(painter)
+
+    def drawPose(self, painter):
+        poseMap = [(0,1), (0,14), (0,15), (1,2), (1,5), (1,8), (1,11), (2,3), (3,4), (5,6), (6,7), (8,9), (9,10), (11,12), (12,13), (14,16), (15,17)]
+        if self.posePoints:
+            line_path = QPainterPath()
+            vrtx_path = QPainterPath()
+            
+            # draw points
+            for i, point in enumerate(self.posePoints):
+                d = self.point_size / self.scale
+                shape = self.point_type
+                if i == self._highlightIndex:
+                    size, shape = self._highlightSettings[self._highlightMode]
+                    d *= size
+                if self._highlightIndex is not None:
+                    self.vertex_fill_color = self.hvertex_fill_color
+                else:
+                    self.vertex_fill_color = Shape.vertex_fill_color
+                if shape == self.P_SQUARE:
+                    vrtx_path.addRect(point.x() - d / 2, point.y() - d / 2, d, d)
+                elif shape == self.P_ROUND:
+                    vrtx_path.addEllipse(point, d / 2.0, d / 2.0)
+                else:
+                    assert False, "unsupported vertex shape"
+                    
+            painter.drawPath(vrtx_path)
+                    
+            # draw lines
+            for link in poseMap:
+                p1 = self.posePoints[link[0]]
+                p2 = self.posePoints[link[1]]
+                if p1.isNull() or p2.isNull():
+                    continue
+                line_path.moveTo(p1)
+                line_path.lineTo(p2)
+            painter.drawPath(line_path)    
 
     def drawVertex(self, path, i):
         d = self.point_size / self.scale
         shape = self.point_type
         point = self.points[i]
-        if point.isNull(): return
         if i == self._highlightIndex:
             size, shape = self._highlightSettings[self._highlightMode]
             d *= size
         if self._highlightIndex is not None:
             self.vertex_fill_color = self.hvertex_fill_color
         else:
-            self.vertex_fill_color = ShapePose.vertex_fill_color
+            self.vertex_fill_color = Shape.vertex_fill_color
         if shape == self.P_SQUARE:
             path.addRect(point.x() - d / 2, point.y() - d / 2, d, d)
         elif shape == self.P_ROUND:
@@ -209,7 +228,7 @@ class ShapePose(object):
         self._highlightIndex = None
 
     def copy(self):
-        shape = ShapePose("%s" % self.label)
+        shape = Shape("%s" % self.label)
         shape.points = [p for p in self.points]
         shape.fill = self.fill
         shape.selected = self.selected

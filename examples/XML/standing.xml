@@ -1,0 +1,27 @@
+<annotation>
+	<folder>images</folder>
+	<filename>standing.jpg</filename>
+	<path>/extHDD1/workspace/github_thaopn/labelImgWithOpenPose/examples/images/standing.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>428</width>
+		<height>612</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>person</name>
+		<pose>standing</pose>
+		<keypoints>228, 86, 233, 151, 188, 151, 178, 225, 175, 299, 275, 148, 299, 230, 275, 302, 195, 314, 206, 419, 208, 515, 257, 315, 265, 422, 268, 528, 220, 76, 237, 76, 207, 86, 255, 86</keypoints>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>154</xmin>
+			<ymin>39</ymin>
+			<xmax>311</xmax>
+			<ymax>582</ymax>
+		</bndbox>
+	</object>
+</annotation>
