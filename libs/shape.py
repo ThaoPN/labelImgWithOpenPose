@@ -15,7 +15,7 @@ import sys
 DEFAULT_LINE_COLOR = QColor(0, 255, 0, 128)
 DEFAULT_FILL_COLOR = QColor(255, 0, 0, 128)
 DEFAULT_SELECT_LINE_COLOR = QColor(255, 255, 255)
-DEFAULT_SELECT_FILL_COLOR = QColor(0, 128, 255, 155)
+DEFAULT_SELECT_FILL_COLOR = QColor(0, 128, 255, 100)
 DEFAULT_VERTEX_FILL_COLOR = QColor(0, 255, 0, 255)
 DEFAULT_HVERTEX_FILL_COLOR = QColor(255, 0, 0)
 MIN_Y_LABEL = 10
@@ -62,6 +62,21 @@ class Shape(object):
             # with an object attribute. Currently this
             # is used for drawing the pending line a different color.
             self.line_color = line_color
+    def getPosePointsString(self):
+        points = []
+        for p in self.posePoints:
+            p = p.toPoint()
+            points.append(p.x())
+            points.append(p.y())
+        return ', '.join(map(str, points))
+        
+    def deletePoseLabel(self):
+        self.poseLabel = 'Unspecified'
+            
+    def displayLabel(self):
+        if self.poseLabel == 'Unspecified':
+            return self.label
+        return "{}/{}".format(self.label, self.poseLabel)
 
     def close(self):
         self._closed = True
@@ -144,6 +159,7 @@ class Shape(object):
 
     def drawPose(self, painter):
         poseMap = [(0,1), (0,14), (0,15), (1,2), (1,5), (1,8), (1,11), (2,3), (3,4), (5,6), (6,7), (8,9), (9,10), (11,12), (12,13), (14,16), (15,17)]
+        #if len(self.posePoints) < 18: return
         if self.posePoints:
             line_path = QPainterPath()
             vrtx_path = QPainterPath()
@@ -248,3 +264,6 @@ class Shape(object):
 
     def __setitem__(self, key, value):
         self.points[key] = value
+
+    def description(self):
+        print('label: {}\nposeLabel: {}'.format(self.label, self.poseLabel))

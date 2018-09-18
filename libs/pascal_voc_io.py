@@ -74,10 +74,12 @@ class PascalVocWriter:
         segmented.text = '0'
         return top
 
-    def addBndBox(self, xmin, ymin, xmax, ymax, name, difficult):
+    def addBndBox(self, xmin, ymin, xmax, ymax, name, difficult, poseLabel, keypoints):
         bndbox = {'xmin': xmin, 'ymin': ymin, 'xmax': xmax, 'ymax': ymax}
         bndbox['name'] = name
         bndbox['difficult'] = difficult
+        bndbox['pose'] = poseLabel
+        bndbox['keypoints'] = keypoints
         self.boxlist.append(bndbox)
 
     def appendObjects(self, top):
@@ -90,7 +92,9 @@ class PascalVocWriter:
                 # Py3: NameError: name 'unicode' is not defined
                 name.text = each_object['name']
             pose = SubElement(object_item, 'pose')
-            pose.text = "Unspecified"
+            pose.text = each_object['pose'] #"Unspecified"
+            keypoints = SubElement(object_item, 'keypoints')
+            keypoints.text = each_object['keypoints']            
             truncated = SubElement(object_item, 'truncated')
             if int(each_object['ymax']) == int(self.imgSize[0]) or (int(each_object['ymin'])== 1):
                 truncated.text = "1" # max == height or min
@@ -141,7 +145,7 @@ class PascalVocReader:
     def getShapes(self):
         return self.shapes
 
-    def addShape(self, label, bndbox, difficult, poseLabel, keypoints):
+    def addShape(self, label, bndbox, difficult, poseLabel, keypoints):       
         xmin = int(bndbox.find('xmin').text)
         ymin = int(bndbox.find('ymin').text)
         xmax = int(bndbox.find('xmax').text)
@@ -178,9 +182,15 @@ class PascalVocReader:
         for object_iter in xmltree.findall('object'):
             bndbox = object_iter.find("bndbox")
             label = object_iter.find('name').text
-            keypoints = object_iter.find('keypoints').text
-            poseLabel = object_iter.find('pose').text
             
+            keypoint_item = object_iter.find('keypoints')
+            if keypoint_item is not None:
+                keypoints = keypoint_item.text
+            else:
+                keypoints = ''
+            
+                    
+            poseLabel = object_iter.find('pose').text
             # Add chris
             difficult = False
             if object_iter.find('difficult') is not None:

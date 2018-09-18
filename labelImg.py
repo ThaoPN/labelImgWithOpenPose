@@ -158,7 +158,7 @@ class MainWindow(QMainWindow, WindowMixin):
         labelListContainer.setLayout(listLayout)
         self.labelList.itemActivated.connect(self.labelSelectionChanged)
         self.labelList.itemSelectionChanged.connect(self.labelSelectionChanged)
-        self.labelList.itemDoubleClicked.connect(self.editLabel)
+        self.labelList.itemDoubleClicked.connect(self.editPoseLabel)
         # Connect to itemChanged to detect checkbox changes.
         self.labelList.itemChanged.connect(self.labelItemChanged)
         listLayout.addWidget(self.labelList)
@@ -313,6 +313,10 @@ class MainWindow(QMainWindow, WindowMixin):
                       'Ctrl+E', 'edit', u'Modify the label of the selected Box',
                       enabled=False)
         self.editButton.setDefaultAction(edit)
+        
+        editPose = action('Edit Pose Label', self.editPoseLabel,
+                      'editPose', u'Modify the pose label of the selected Box',
+                      enabled=False)        
 
         shapeLineColor = action('Shape &Line Color', self.chshapeLineColor,
                                 icon='color_line', tip=u'Change the line color for this specific shape',
@@ -327,14 +331,14 @@ class MainWindow(QMainWindow, WindowMixin):
 
         # Lavel list context menu.
         labelMenu = QMenu()
-        addActions(labelMenu, (edit, delete))
+        addActions(labelMenu, (edit, editPose, delete))
         self.labelList.setContextMenuPolicy(Qt.CustomContextMenu)
         self.labelList.customContextMenuRequested.connect(
             self.popLabelListMenu)
 
         # Store actions for further handling.
         self.actions = struct(save=save, save_format=save_format, saveAs=saveAs, open=open, close=close, resetAll = resetAll,
-                              lineColor=color1, create=create, delete=delete, edit=edit, copy=copy,
+                              lineColor=color1, create=create, delete=delete, edit=edit, editPose=editPose, copy=copy,
                               createMode=createMode, editMode=editMode, advancedMode=advancedMode,
                               shapeLineColor=shapeLineColor, shapeFillColor=shapeFillColor,
                               zoom=zoom, zoomIn=zoomIn, zoomOut=zoomOut, zoomOrg=zoomOrg,
@@ -658,11 +662,25 @@ class MainWindow(QMainWindow, WindowMixin):
         if not self.canvas.editing():
             return
         item = self.currentItem()
-        text = self.labelDialog.popUp(item.text())
+        shape = self.itemsToShapes[item]
+        text = ustr(self.labelDialog.popUp(shape.label))
         if text is not None:
-            item.setText(text)
-            item.setBackground(generateColorByText(text))
+            shape.label = text
+            item.setText(shape.displayLabel())
+            item.setBackground(generateColorByText(shape.label))
             self.setDirty()
+            
+    def editPoseLabel(self):
+        if not self.canvas.editing():
+            return
+        item = self.currentItem()
+        shape = self.itemsToShapes[item]
+        text = ustr(self.labelDialog.popUp(shape.poseLabel))
+        if text is not None:
+            shape.poseLabel = text
+            item.setText(shape.displayLabel())
+            item.setBackground(generateColorByText(shape.label))
+            self.setDirty()    
 
     # Tzutalin 20160906 : Add file list and dock to move faster
     def fileitemDoubleClicked(self, item=None):
@@ -712,12 +730,13 @@ class MainWindow(QMainWindow, WindowMixin):
         self.actions.delete.setEnabled(selected)
         self.actions.copy.setEnabled(selected)
         self.actions.edit.setEnabled(selected)
+        self.actions.editPose.setEnabled(selected)
         self.actions.shapeLineColor.setEnabled(selected)
         self.actions.shapeFillColor.setEnabled(selected)
 
     def addLabel(self, shape):
         shape.paintLabel = self.paintLabelsOption.isChecked()
-        item = HashableQListWidgetItem(shape.label)
+        item = HashableQListWidgetItem(shape.displayLabel())
         item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
         item.setCheckState(Qt.Checked)
         item.setBackground(generateColorByText(shape.label))
@@ -775,7 +794,9 @@ class MainWindow(QMainWindow, WindowMixin):
                         fill_color=s.fill_color.getRgb(),
                         points=[(p.x(), p.y()) for p in s.points],
                        # add chris
-                        difficult = s.difficult)
+                        difficult = s.difficult,
+                        pose=s.poseLabel,
+                        keypoints=s.getPosePointsString())
 
         shapes = [format_shape(shape) for shape in self.canvas.shapes]
         # Can add differrent annotation formats here
@@ -817,8 +838,8 @@ class MainWindow(QMainWindow, WindowMixin):
     def labelItemChanged(self, item):
         shape = self.itemsToShapes[item]
         label = item.text()
-        if label != shape.label:
-            shape.label = item.text()
+        if label != shape.displayLabel():
+            #shape.label = item.text()
             shape.line_color = generateColorByText(shape.label)
             self.setDirty()
         else:  # User probably changed item visibility
