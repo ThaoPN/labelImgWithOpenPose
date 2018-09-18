@@ -13,6 +13,9 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 from lxml import etree
 import codecs
+import tensorflow as tf
+import os
+
 
 sys.path.append('/usr/local/python')
 try:
@@ -30,12 +33,12 @@ params["scale_gap"] = 0.3
 params["scale_number"] = 1
 params["render_threshold"] = 0.05
 # If GPU version is built, and multiple GPUs are available, set the ID here
-params["num_gpu_start"] = 0
+params["num_gpu_start"] = 1
 params["disable_blending"] = True
 # Ensure you point to the correct path where models are located
-params["default_model_folder"] = "/home/ai/cuda-workspace/openpose/models/"
+params["default_model_folder"] = "/home/aiteam/workspace/openpose/models/"
 # Construct OpenPose object allocates GPU memory
-openpose = op.OpenPose(params)
+#openpose = op.OpenPose(params)
 
 IMAGE_EXTENTIONS = ['.bmp', '.cur', '.gif', '.icns', '.ico', '.jpeg', '.jpg', '.pbm', '.pgm', '.png', '.ppm', '.svg', '.svgz', '.tga', '.tif', '.tiff', '.wbmp', '.webp', '.xbm', '.xpm']
 XML_EXT = '.xml'
@@ -108,10 +111,7 @@ def normKeypoint(X):
     length_body = length_head + length_torso + length_leg
     length_body[length_body == 0] = 1
     # The center of gravity
-    centr_x = X[:, 0::2].sum(1).reshape(num_sample,1) / 18LABELS = [    
-    "standing",
-    "bending",
-]
+    centr_x = X[:, 0::2].sum(1).reshape(num_sample,1) / 18
     centr_y = X[:, 1::2].sum(1).reshape(num_sample,1) / 18
 
     # The  coordinates  are  normalized relative to the length of the body and the center of gravity
@@ -145,8 +145,10 @@ def scanAllImages(folderPath):
     images.sort(key=lambda x: x.lower())
     return images
 
-def getKeypointsOfImage(imagePath):
+def getKeypointsOfImage(openpose, imagePath):
+    print("Get Keypoints for: {}".format(imagePath))
     img = cv2.imread(imagePath)
+    print(img.shape)
     keypoints = openpose.forward(img, False)[:,:,:-1]
     # Remove accuracy colunm and return
     return keypoints
@@ -162,9 +164,9 @@ def prettify(elem):
     '''reparsed = minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="\t", encoding=ENCODE_METHOD)'''
 
-def saveKeypointsToXML(sess, targetFile, keypoints):
+def saveKeypointsToXML(sess, graph, targetFile, keypoints):
     if not targetFile.endswith('xml'):
-        return None
+       return None
     
     top = Element('annotation')
     
@@ -189,7 +191,11 @@ def saveKeypointsToXML(sess, targetFile, keypoints):
         ymin = min(Y)
         ymax = max(Y)
         
-        norm_XY = np.array([XY], dtype=np.float32)
+        y = graph.get_tensor_by_name('prefix/output_node0:0')
+        x = graph.get_tensor_by_name('prefix/dense_1_input:0')
+        print(XY)
+        norm_XY = normKeypoint(np.array([XY], dtype=np.float32))
+        print(type(norm_XY))
         poseIndexs = sess.run(tf.argmax(y,1), feed_dict={x: norm_XY})
         pose = LABELS[poseIndexs[0]]
         
@@ -226,7 +232,7 @@ def saveKeypointsToXML(sess, targetFile, keypoints):
     out_file.write(prettifyResult.decode('utf8'))
     out_file.close()    
 
-def saveKeypointsOfImage(sess, imagePath, keypoints):
+def saveKeypointsOfImage(sess, graph, imagePath, keypoints):
     dirPathContaint = os.path.split(os.path.dirname(imagePath))[0]
     
     nameWithoutExt = os.path.basename(os.path.splitext(imagePath)[0])
@@ -236,7 +242,7 @@ def saveKeypointsOfImage(sess, imagePath, keypoints):
         os.mkdir(dirPathSavedKeypoints)
         
     keypointsFileName = os.path.join(dirPathSavedKeypoints, nameWithoutExt) + XML_EXT
-    saveKeypointsToXML(keypointsFileName, keypoints)
+    saveKeypointsToXML(sess, graph, keypointsFileName, keypoints)
             
     print(keypointsFileName)
 
@@ -245,13 +251,21 @@ if __name__ == '__main__':
     parser.add_argument('--imagedir', type=str, default='examples/images')
     args = parser.parse_args()
     
-    outputType = args.outputtype
-    
+    graph = loadGraph()
+    print("Graph load completed") 
+
+    config = tf.ConfigProto()
+    config.gpu_options.per_process_gpu_memory_fraction = 0.4
+ 
     imagedir = args.imagedir
     if imagedir != '' :
         images = scanAllImages(args.imagedir)
-        with tf.Session(graph=graph) as sess:
-            for image in images:
-                keypoints = getKeypointsOfImage(image)
-                saveKeypointsOfImage(sess, image, keypoints)
+       # with tf.Session(config=config, graph=graph) as sess:
+        print("Session load completed")
+        for image in images:
+            openpose = op.OpenPose(params)
+            keypoints = getKeypointsOfImage(openpose, image)
+            print("get keypoints completed")
+            with tf.Session(config=config, graph=graph) as sess:
+                saveKeypointsOfImage(sess, graph, image, keypoints)
                     
